@@ -19,6 +19,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+
 	s := grpc.NewServer()
 	proto.RegisterGrpcServerServer(s, gserver{})
 	s.Serve(lis)
@@ -28,8 +29,8 @@ func main() {
 func (s gserver) FuncA(c context.Context, in *proto.FuncaRes) (*proto.FuncaRep, error) {
 	rep := &proto.FuncaRep{}
 	fmt.Println(*in)
-	rep.ID = in.ID
-	rep.Name = in.Name
+	rep.ID = 1
+	rep.Name = "1"
 	return rep, nil
 }
 

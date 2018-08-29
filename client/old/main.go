@@ -8,12 +8,16 @@ import (
 
 	"github.com/cjysmat/grpc-reflect/proto"
 
+	codec "github.com/cjysmat/grpc-reflect/getway/proto"
+
 	"google.golang.org/grpc"
 )
 
 func main() {
 
-	conn, _ := grpc.Dial("127.0.0.1:53000", grpc.WithInsecure())
+	opt := grpc.WithDefaultCallOptions(grpc.CallCustomCodec(codec.DefaultGRPCCodecs["application/json"]), grpc.FailFast(false))
+
+	conn, _ := grpc.Dial("127.0.0.1:53000", grpc.WithInsecure(), opt)
 	client := proto.NewGrpcServerClient(conn)
 
 	t1 := time.Now()
