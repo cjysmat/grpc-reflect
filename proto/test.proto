@@ -1,20 +1,32 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
+
 package proto;
 
 service GrpcServer{
-	rpc FuncA(FuncaRes) returns (FuncaRep) {}
-    rpc FuncB(FuncbRes) returns (FuncbRep) {}
+	rpc FuncA(FuncaRes) returns (FuncaRep) {
+      option (google.api.http) = {
+      get: "/FuncA"
+    };
+  }
+
+    rpc FuncB(FuncbRes) returns (FuncbRep) {
+    option (google.api.http) = {
+      post: "/FuncB"
+      body: "*"
+    };
+  }
 }
 
 message FuncaRes {
     int64 ID = 1;
-    string ID1 = 2;
+    string Name = 2;
 }
 
 message FuncaRep {
     int64 ID = 1;
-    string ID1 = 2;
+    string Name = 2;
 }
 
 message FuncbRes {

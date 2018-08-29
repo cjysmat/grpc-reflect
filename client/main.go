@@ -52,7 +52,7 @@ func doA(stub grpcdynamic.Stub, sd *desc.ServiceDescriptor) {
 	in := md.GetInputType()
 	msgm := dynamic.NewMessage(in)
 
-	msg := []byte(`{"ID":1,"ID1":"far"}`)
+	msg := []byte(`{"ID":1,"Name":"far"}`)
 	msgm.UnmarshalJSON(msg)
 
 	rep, err := stub.InvokeRpc(context.Background(), md, msgm)
@@ -73,7 +73,7 @@ func doB(stub grpcdynamic.Stub, sd *desc.ServiceDescriptor) {
 	in := md.GetInputType()
 	msgm := dynamic.NewMessage(in)
 
-	msg := []byte(`{"arry":[1,2,3,4,5,6,7,8]`)
+	msg := []byte(`{"arry":[1,2,3,4,5,6,7,8]}`)
 	msgm.UnmarshalJSON(msg)
 
 	rep, err := stub.InvokeRpc(context.Background(), md, msgm)

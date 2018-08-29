@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 
@@ -26,8 +27,9 @@ func main() {
 //FuncA for ...
 func (s gserver) FuncA(c context.Context, in *proto.FuncaRes) (*proto.FuncaRep, error) {
 	rep := &proto.FuncaRep{}
+	fmt.Println(*in)
 	rep.ID = in.ID
-	rep.ID1 = in.ID1
+	rep.Name = in.Name
 	return rep, nil
 }
 
