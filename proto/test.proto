@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package proto;
+
+service GrpcServer{
+	rpc FuncA(FuncaRes) returns (FuncaRep) {}
+    rpc FuncB(FuncbRes) returns (FuncbRep) {}
+}
+
+message FuncaRes {
+    int64 ID = 1;
+    string ID1 = 2;
+}
+
+message FuncaRep {
+    int64 ID = 1;
+    string ID1 = 2;
+}
+
+message FuncbRes {
+    repeated int64 arry = 1; 
+}
+
+message FuncbRep {
+    repeated int64 arry = 1; 
+}
