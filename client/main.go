@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"time"
 
 	"github.com/jhump/protoreflect/dynamic/grpcdynamic"
 
@@ -16,6 +15,8 @@ import (
 	"google.golang.org/grpc"
 
 	"golang.org/x/net/context"
+
+	codec "github.com/cjysmat/grpc-reflect/getway/proto"
 
 	"github.com/jhump/protoreflect/desc"
 )
@@ -39,11 +40,11 @@ func main() {
 
 	doA(stub, sd)
 
-	t1 := time.Now()
-	for i := 0; i < 100000; i++ {
-		doB(stub, sd)
-	}
-	fmt.Println(time.Now().Sub(t1).Seconds())
+	// t1 := time.Now()
+	// for i := 0; i < 100000; i++ {
+	// 	doB(stub, sd)
+	// }
+	// fmt.Println(time.Now().Sub(t1).Seconds())
 }
 
 func doA(stub grpcdynamic.Stub, sd *desc.ServiceDescriptor) {
@@ -55,7 +56,9 @@ func doA(stub grpcdynamic.Stub, sd *desc.ServiceDescriptor) {
 	msg := []byte(`{"ID":1,"Name":"far"}`)
 	msgm.UnmarshalJSON(msg)
 
-	rep, err := stub.InvokeRpc(context.Background(), md, msgm)
+	opt := grpc.CallCustomCodec(codec.DefaultGRPCCodecs["application/json"])
+
+	rep, err := stub.InvokeRpc(context.Background(), md, msgm, opt)
 	if err != nil {
 		log.Fatal(err)
 		return

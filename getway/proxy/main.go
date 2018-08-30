@@ -34,6 +34,10 @@ func (s *proxymxu) ServeHTTP(rep http.ResponseWriter, res *http.Request) {
 		return
 	}
 
+	md := metadata.Pairs("Key", "v")
+
+	// 新建一个有 metadata 的 context
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
 	var returnHeader = metadata.MD{}
 	var returnTrailer = metadata.MD{}
 	opt1 := grpc.Header(&returnHeader)
@@ -41,7 +45,9 @@ func (s *proxymxu) ServeHTTP(rep http.ResponseWriter, res *http.Request) {
 
 	var out interface{}
 
-	err = gconn.Invoke(context.Background(), fullMethod, params, &out, opt1, opt2) //grpc.FailFast(false)
+	err = gconn.Invoke(ctx, fullMethod, params, &out, opt1, opt2) //grpc.FailFast(false)
+
+	fmt.Println(returnTrailer)
 
 	if err != nil {
 		fmt.Println(err)
@@ -83,7 +89,6 @@ func (p *proxymxu) parseParams(req *http.Request) map[string]interface{} {
 	params := make(map[string]interface{})
 	var err error
 	for key, v := range req.Form {
-		fmt.Println(key, v)
 		var data map[string]interface{}
 		// curl post -d '{"a":"100", "b":"100"}'这种形式过来的数据
 		// 会被解析到req.Form的key当中，这时候value是空值

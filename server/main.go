@@ -6,6 +6,10 @@ import (
 	"log"
 	"net"
 
+	codec "github.com/cjysmat/grpc-reflect/getway/proto"
+
+	"google.golang.org/grpc/metadata"
+
 	"google.golang.org/grpc"
 
 	"github.com/cjysmat/grpc-reflect/proto"
@@ -20,7 +24,8 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	s := grpc.NewServer()
+	op := grpc.CustomCodec(codec.DefaultGRPCCodecs["application/json"])
+	s := grpc.NewServer(op)
 	proto.RegisterGrpcServerServer(s, gserver{})
 	s.Serve(lis)
 }
@@ -28,14 +33,32 @@ func main() {
 //FuncA for ...
 func (s gserver) FuncA(c context.Context, in *proto.FuncaRes) (*proto.FuncaRep, error) {
 	rep := &proto.FuncaRep{}
+	md, ok := metadata.FromIncomingContext(c)
+	if !ok {
+		return nil, nil
+	}
+
+	fmt.Println(md.Get("key"))
 	fmt.Println(*in)
 	rep.ID = 1
 	rep.Name = "1"
+
+	md1 := metadata.Pairs("key1", "v1")
+	metadata.NewOutgoingContext(c, md1)
+
 	return rep, nil
 }
 
 //FuncA for ...
 func (s gserver) FuncB(c context.Context, in *proto.FuncbRes) (*proto.FuncbRep, error) {
+
+	md, ok := metadata.FromIncomingContext(c)
+	if !ok {
+		return nil, nil
+	}
+
+	fmt.Println(md.Get("key"))
+
 	rep := &proto.FuncbRep{}
 
 	for _, item := range in.Arry {
